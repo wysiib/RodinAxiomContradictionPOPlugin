@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eventb.ui.editorItems">
+      <toggleAttribute
+            class="de.stups.hhu.rodinaxiompos.ContradictionAttribute"
+            id="de.stups.hhu.rodinaxiompos.contradictionAttribute"
+            typeId="de.stups.hhu.rodinaxiompos.contradictionAttribute">
+      </toggleAttribute>
+      <attributeRelation
+            elementTypeId="org.eventb.core.axiom">
+         <attributeReference
+               descriptionId="de.stups.hhu.rodinaxiompos.contradictionAttribute">
+         </attributeReference>
+      </attributeRelation>
+      <attributeRelation
+            elementTypeId="org.eventb.core.scAxiom">
+         <attributeReference
+               descriptionId="de.stups.hhu.rodinaxiompos.contradictionAttribute">
+         </attributeReference>
+      </attributeRelation>
+   </extension>
+   <extension
+         point="org.rodinp.core.attributeTypes">
+      <attributeType
+            id="contradictionAttribute"
+            kind="boolean"
+            name="Axiom(s) may contain contradiction">
+      </attributeType>
+   </extension>
+   <extension
+         point="org.eventb.core.configurations">
+      <configuration
+            id="ctxBase"
+            name="ctxBase">
+         <scModule
+               id="de.stups.hhu.rodinaxiompos.contradictionAttributeProcessor">
+         </scModule>
+      </configuration>
+   </extension>
+   <extension
+         point="org.eventb.core.scModuleTypes">
+      <processorType
+            class="de.stups.hhu.rodinaxiompos.ContradictionAttributeProcessor"
+            id="contradictionAttributeProcessor"
+            name="contradictionAttributeProcessor"
+            parent="org.eventb.core.contextModule">
+      </processorType>
+   </extension>
+</plugin>
