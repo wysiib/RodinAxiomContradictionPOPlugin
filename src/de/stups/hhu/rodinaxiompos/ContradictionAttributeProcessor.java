@@ -23,7 +23,8 @@ import org.rodinp.core.IRodinFile;
 
 public class ContradictionAttributeProcessor extends SCProcessorModule {
 	public static final IModuleType<ContradictionAttributeProcessor> MODULE_TYPE = SCCore
-			.getModuleType(Activator.PLUGIN_ID + ".symbolicAttributeProcessor"); //$NON-NLS-1$
+			.getModuleType(Activator.PLUGIN_ID
+					+ ".contradictionAttributeProcessor"); //$NON-NLS-1$
 
 	@Override
 	public void process(IRodinElement element, IInternalElement target,
@@ -38,15 +39,16 @@ public class ContradictionAttributeProcessor extends SCProcessorModule {
 
 		ISCContextRoot scContextRoot = (ISCContextRoot) target;
 
-		IAxiom[] constants = contextRoot.getAxioms();
-		ISCAxiom[] scconstants = scContextRoot.getSCAxioms();
+		IAxiom[] axioms = contextRoot.getAxioms();
+		ISCAxiom[] scaxioms = scContextRoot.getSCAxioms();
 
-		if (constants.length == 0 || scconstants.length == 0)
+		if (axioms.length == 0 || scaxioms.length == 0)
 			return;
 
-		for (IAxiom axiom : constants) {
+		for (IAxiom axiom : axioms) {
 			String identifier = axiom
-					.getAttributeValue(EventBAttributes.IDENTIFIER_ATTRIBUTE);
+					.getAttributeValue(EventBAttributes.LABEL_ATTRIBUTE);
+
 			ISCAxiom scAxiom = scContextRoot.getSCAxiom(identifier);
 
 			// might have been filtered out by previous modules
