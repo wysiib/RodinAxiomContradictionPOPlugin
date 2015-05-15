@@ -38,7 +38,7 @@
                id="de.stups.hhu.rodinaxiompos.contradictionAttributeProcessor">
          </scModule>
          <pogModule
-               id="de.stups.hhu.rodinaxiompos.noContradictionPOGenerator">
+               id="de.stups.hhu.rodinaxiompos.noContradictionModule">
          </pogModule>
       </configuration>
    </extension>
@@ -54,8 +54,8 @@
     <extension
          point="org.eventb.core.pogModuleTypes">
       <processorType
-            class="de.stups.hhu.rodinaxiompos.NoContradictionPOGenerator"
-            id="noContradictionPOGenerator"
+            class="de.stups.hhu.rodinaxiompos.NoContradictionModule"
+            id="noContradictionModule"
             name="Contradiction in Axioms Module"
             parent="org.eventb.core.contextModule">
       </processorType>
