@@ -42,8 +42,6 @@ public class ContradictionAttributeProcessor extends SCProcessorModule {
 		ISCAxiom[] scAxioms = scContextRoot.getSCAxioms();
 
 		for (IAxiom axiom : axioms) {
-			String identifier = axiom.getLabel();
-
 			ISCAxiom scAxiom = null;
 
 			for (ISCAxiom s : scAxioms) {
