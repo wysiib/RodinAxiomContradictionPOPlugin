@@ -8,7 +8,6 @@ package de.stups.hhu.rodinaxiompos;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eventb.core.EventBAttributes;
 import org.eventb.core.IAxiom;
 import org.eventb.core.IContextRoot;
 import org.eventb.core.ISCAxiom;
@@ -24,7 +23,7 @@ import org.rodinp.core.IRodinFile;
 public class ContradictionAttributeProcessor extends SCProcessorModule {
 	public static final IModuleType<ContradictionAttributeProcessor> MODULE_TYPE = SCCore
 			.getModuleType(Activator.PLUGIN_ID
-					+ ".contradictionAttributeProcessor"); //$NON-NLS-1$
+					+ ".contradictionAttributeProcessor");
 
 	@Override
 	public void process(IRodinElement element, IInternalElement target,
@@ -40,19 +39,22 @@ public class ContradictionAttributeProcessor extends SCProcessorModule {
 		ISCContextRoot scContextRoot = (ISCContextRoot) target;
 
 		IAxiom[] axioms = contextRoot.getAxioms();
-		ISCAxiom[] scaxioms = scContextRoot.getSCAxioms();
-
-		if (axioms.length == 0 || scaxioms.length == 0)
-			return;
+		ISCAxiom[] scAxioms = scContextRoot.getSCAxioms();
 
 		for (IAxiom axiom : axioms) {
-			String identifier = axiom
-					.getAttributeValue(EventBAttributes.LABEL_ATTRIBUTE);
+			String identifier = axiom.getLabel();
 
-			ISCAxiom scAxiom = scContextRoot.getSCAxiom(identifier);
+			ISCAxiom scAxiom = null;
+
+			for (ISCAxiom s : scAxioms) {
+				if (s.getLabel().equals(axiom.getLabel())) {
+					scAxiom = s;
+					break;
+				}
+			}
 
 			// might have been filtered out by previous modules
-			if (scAxiom.exists()) { // original might not contain the attribute
+			if (scAxiom != null) { // original might not contain the attribute
 				if (axiom.hasAttribute(ContradictionAttribute.ATTRIBUTE)) {
 					boolean attribute = axiom
 							.getAttributeValue(ContradictionAttribute.ATTRIBUTE);
