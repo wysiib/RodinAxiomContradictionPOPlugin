@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: de.stups.hhu.rodinaxiompos;singleton:=true
+Bundle-Name: Axiom Contradiction POs
+Bundle-Version: 1.0.0.201505290958
+Require-Bundle: org.eclipse.core.runtime,org.eventb.core;bundle-versio
+ n="3.1.0",org.rodinp.core;bundle-version="1.7.0",org.eventb.ui,org.ec
+ lipse.ui.workbench,org.eventb.core.ast;bundle-version="3.1.0"
+Bundle-ManifestVersion: 2
+Bundle-Activator: de.stups.hhu.rodinaxiompos.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+

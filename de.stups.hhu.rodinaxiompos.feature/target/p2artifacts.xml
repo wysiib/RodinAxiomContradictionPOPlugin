@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<artifacts size='1'>
+  <artifact classifier='org.eclipse.update.feature' id='de.stups.hhu.rodinaxiompos.feature' version='1.0.0.201505290958'>
+    <properties size='6'>
+      <property name='artifact.size' value='2176'/>
+      <property name='download.size' value='2176'/>
+      <property name='maven-groupId' value='de.stups.hhu.rodinaxiompos'/>
+      <property name='maven-artifactId' value='de.stups.hhu.rodinaxiompos.feature'/>
+      <property name='maven-version' value='1.0.0.qualifier'/>
+      <property name='download.contentType' value='application/zip'/>
+    </properties>
+  </artifact>
+</artifacts>
