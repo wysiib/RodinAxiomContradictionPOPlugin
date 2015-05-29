@@ -1,4 +1,4 @@
-# Camille
+# Rodin Contradiction in Axioms PO Generator
 An experimental plugin for Rodin that generates a new PO stating that there should be an assignement to the constants making (a subset of) the axioms true.
 
 It can be used to verify that there is no contradiction in the axioms.
