@@ -6,28 +6,31 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eventb.core.IPOPredicateSet;
 import org.eventb.core.IPORoot;
 import org.eventb.core.IPOSource;
 import org.eventb.core.ISCAxiom;
 import org.eventb.core.ISCContextRoot;
+import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.FormulaFactory;
+import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.pog.IPOGHint;
 import org.eventb.core.pog.IPOGPredicate;
 import org.eventb.core.pog.IPOGSource;
 import org.eventb.core.pog.POGCore;
 import org.eventb.core.pog.POGProcessorModule;
-import org.eventb.core.pog.state.IMachineHypothesisManager;
+import org.eventb.core.pog.state.IContextHypothesisManager;
 import org.eventb.core.pog.state.IPOGStateRepository;
 import org.eventb.core.tool.IModuleType;
 import org.rodinp.core.IRodinElement;
 import org.rodinp.core.IRodinFile;
 import org.rodinp.core.RodinDBException;
 
-public class NoContradictionPOGenerator extends POGProcessorModule {
+public class NoContradictionModule extends POGProcessorModule {
 
-	private static final IModuleType<NoContradictionPOGenerator> MODULE_TYPE = POGCore
-			.getModuleType(Activator.PLUGIN_ID + ".noContradictionPOGModule");
+	private static final IModuleType<NoContradictionModule> MODULE_TYPE = POGCore
+			.getModuleType(Activator.PLUGIN_ID + ".noContradictionModule");
 
 	@Override
 	public IModuleType<?> getModuleType() {
@@ -44,11 +47,11 @@ public class NoContradictionPOGenerator extends POGProcessorModule {
 
 		final IPORoot target = repository.getTarget();
 
-		final IMachineHypothesisManager machineHypothesisManager = (IMachineHypothesisManager) repository
-				.getState(IMachineHypothesisManager.STATE_TYPE);
+		final IContextHypothesisManager contextHypothesisManager = (IContextHypothesisManager) repository
+				.getState(IContextHypothesisManager.STATE_TYPE);
 
-		// if the finitness of bound is not trivial
-		// we generate the PO
+		IPOPredicateSet hyps = contextHypothesisManager.getRootHypothesis();
+
 		if (mustGeneratePO(root)) {
 			final IPOGSource[] sources = createSources(root);
 			final Predicate noContradictionPredicate = createPredicate(root, ff);
@@ -56,39 +59,44 @@ public class NoContradictionPOGenerator extends POGProcessorModule {
 					target,
 					"NCA",
 					POGProcessorModule.makeNature("No Contradiction in Axioms"),
-					machineHypothesisManager.getFullHypothesis(),
-					Collections.<IPOGPredicate> emptyList(),
+					hyps, Collections.<IPOGPredicate> emptyList(),
 					makePredicate(noContradictionPredicate, element), sources,
 					new IPOGHint[0],
-					machineHypothesisManager.machineIsAccurate(), monitor);
+					contextHypothesisManager.contextIsAccurate(), monitor);
 		}
 	}
 
 	private Predicate createPredicate(ISCContextRoot root, FormulaFactory ff)
 			throws CoreException {
-		List<ISCAxiom> selected = new ArrayList<ISCAxiom>();
+		ITypeEnvironmentBuilder te = ff.makeTypeEnvironment();
+
+		List<Predicate> selected = new ArrayList<Predicate>();
 		for (ISCAxiom iscAxiom : root.getSCAxioms()) {
 			if (iscAxiom.hasAttribute(ContradictionAttribute.ATTRIBUTE)) {
 				if (iscAxiom
 						.getAttributeValue(ContradictionAttribute.ATTRIBUTE)) {
-					selected.add(iscAxiom);
+					selected.add(iscAxiom.getPredicate(te));
 				}
 			}
 		}
 
-		Predicate conjunctionOfAxioms = selected.get(0).getPredicate(
-				ff.makeTypeEnvironment());
-		for (int i = 1; i < selected.size(); i++) {
-			Predicate next = selected.get(i).getPredicate(
-					ff.makeTypeEnvironment());
-			conjunctionOfAxioms = ff.makeBinaryPredicate(Predicate.LAND,
-					conjunctionOfAxioms, next, null);
+		Predicate conjunctionOfAxioms;
+
+		if (selected.size() == 1) {
+			conjunctionOfAxioms = selected.get(0);
+		} else {
+			conjunctionOfAxioms = ff.makeAssociativePredicate(Predicate.LAND,
+					selected, null);
 		}
 
-		Predicate implies = ff.makeBinaryPredicate(Predicate.LIMP,
-				conjunctionOfAxioms,
-				ff.makeLiteralPredicate(Predicate.FALSE, null), null);
-		return ff.makeUnaryPredicate(Predicate.NOT, implies, null);
+		List<BoundIdentDecl> theBoundOnes = new ArrayList<BoundIdentDecl>();
+
+		conjunctionOfAxioms = conjunctionOfAxioms
+				.bindAllFreeIdents(theBoundOnes);
+		Predicate full = ff.makeQuantifiedPredicate(Predicate.EXISTS,
+				theBoundOnes, conjunctionOfAxioms, null);
+		return full;
+
 	}
 
 	private IPOGSource[] createSources(ISCContextRoot root) {
