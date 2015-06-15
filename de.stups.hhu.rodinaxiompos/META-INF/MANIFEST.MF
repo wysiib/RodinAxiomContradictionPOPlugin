@@ -12,3 +12,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eventb.core.ast;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
+Bundle-Vendor: HHU Düsseldorf STUPS Group
